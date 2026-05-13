@@ -67,13 +67,11 @@ abstract class BaseCallback extends PluginCallback
         if ($status === PaymentStatus::COMPLETED) {
             $transaction = "$paymentMethod payment of $price Successful (Order ID: " . $invoiceId . ")";
 
-            if ($cPlugin->IsUnpaid() == 1) {
+            if (!$cPlugin->IsPaid()) {
                 $cPlugin->PaymentAccepted($amount, $transaction);
                 $returnURL = \CE_Lib::getSoftwareURL() . "/index.php?fuse=billing&paid=1&controller=invoice&view=invoice&id=" . $invoiceId;
                 header("Location: " . $returnURL);
                 exit;
-            } else {
-                return;
             }
         } elseif ($status === PaymentStatus::PENDING) {
             $transaction = "$paymentMethod payment of $price is Pending for Verification (Order ID: " . $invoiceId . ")";
